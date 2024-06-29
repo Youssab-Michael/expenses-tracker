@@ -41,9 +41,24 @@ class ExpenseDatabase extends ChangeNotifier {
     notifyListeners();
   }
 
-// update - edit expense in db
+  // update - edit expense in db
+  Future<void> updateExpense(int id, Expense updatedExpense) async {
 
-// delete - delete an expense from db
+    // same id
+    updatedExpense.id = id;
+
+    // update in db
+    await isar.writeTxn(() => isar.expenses.put(updatedExpense),);
+
+    // re-read from db
+    await readExpenses();
+  }
+
+  // delete - delete an expense from db
+  Future<void> deleteExpense(int id)async{
+    await isar.writeTxn(() => isar.expenses.delete(id),);
+    await readExpenses();
+  }
 
 // helper
 }
