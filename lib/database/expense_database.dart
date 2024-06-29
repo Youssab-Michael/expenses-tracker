@@ -25,6 +25,7 @@ class ExpenseDatabase extends ChangeNotifier {
     );
 
     // re-read from db
+    readExpenses();
   }
 
   // read - read expense from db
@@ -33,8 +34,11 @@ class ExpenseDatabase extends ChangeNotifier {
     List<Expense> fetchedExpenses = await isar.expenses.where().findAll();
 
     // give to local expense list
+    _allExpense.clear();
+    _allExpense.add(fetchedExpenses);
 
     // update ui
+    notifyListeners();
   }
 
 // update - edit expense in db
