@@ -35,7 +35,7 @@ class ExpenseDatabase extends ChangeNotifier {
 
     // give to local expense list
     _allExpense.clear();
-    _allExpense.add(fetchedExpenses);
+    _allExpense.addAll(fetchedExpenses);
 
     // update ui
     notifyListeners();
