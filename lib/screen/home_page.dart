@@ -9,7 +9,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  void openNewExpenseBox() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("New Expense"),
 
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
