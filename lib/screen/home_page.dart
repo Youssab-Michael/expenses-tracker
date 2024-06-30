@@ -8,10 +8,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: openNewExpenseBox,
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
