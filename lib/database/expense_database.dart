@@ -59,6 +59,4 @@ class ExpenseDatabase extends ChangeNotifier {
     await isar.writeTxn(() => isar.expenses.delete(id),);
     await readExpenses();
   }
-
-// helper
 }
