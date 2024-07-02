@@ -1,5 +1,8 @@
+import 'package:expensestracker/database/expense_database.dart';
+import 'package:expensestracker/helper/functions.dart';
 import 'package:expensestracker/model/expense.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,6 +14,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController amountController = TextEditingController();
+
+  @override
+  void initState() {
+    Provider.of<ExpenseDatabase>(context, listen: false).readExpenses();
+    super.initState();
+  }
 
   void openNewExpenseBox() {
     showDialog(
@@ -32,6 +41,7 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           _cancelButton(),
+          _createNewExpenseButton(),
         ],
       ),
     );
@@ -39,10 +49,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: openNewExpenseBox,
-        child: Icon(Icons.add),
+    return Consumer<ExpenseDatabase>(
+      builder: (context, value, child) => Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: openNewExpenseBox,
+          child: Icon(Icons.add),
+        ),
+        body: ListView.builder(
+          itemCount: value.allExpense.length,
+          itemBuilder: (context, index) {
+            Expense individualExpense = value.allExpense[index];
+            return ListTile(
+              title: Text(individualExpense.name,),
+              trailing: Text(formatAmount(individualExpense.amount),),
+            );
+          },
+        ),
       ),
     );
   }
@@ -60,15 +82,21 @@ class _HomePageState extends State<HomePage> {
 
   Widget _createNewExpenseButton() {
     return MaterialButton(
-      onPressed: () {
+      onPressed: () async {
         if (nameController.text.isNotEmpty &&
             amountController.text.isNotEmpty) {
           Navigator.pop(context);
           Expense newExpense = Expense(
             name: nameController.text,
-            amount: amountController.text,
+            amount: convertStringToDouble(amountController.text),
             date: DateTime.now(),
           );
+
+          // save to database
+          await context.read<ExpenseDatabase>().createNewExpense(newExpense);
+
+          nameController.clear();
+          amountController.clear();
         }
       },
       child: Text("Save"),
